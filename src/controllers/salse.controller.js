@@ -1,8 +1,7 @@
-
 import Product from '../models/Product.js'
 import { calculatePaymentStatus } from '../helpers/calculatePaymentStatus.js'
 import { generateInvoiceNumber } from '../controllers/counter.controller.js'
-import Sale from '../models/sale.js'
+import Sale from '../models/Sale.js'
 
 
 export const createSale = async(req ,res ,next)=>{
