@@ -1,3 +1,5 @@
+import Product from "../models/Product.js"
+import Purchase from "../models/Purchase.js"
 import Supplier from "../models/Supplier.js"
 export const create = async (req, res, next) => {
     try {
@@ -76,5 +78,39 @@ export const remove = async (req, res, next) => {
         })
     } catch (error) {
         next(error)
+    }
+}
+
+export const updatePurchaseStatus = async (req ,res,next)=>{
+    try{
+        const id = req.params.id
+        const {purchaseStatus} = req.body
+        //find purchase
+        const result = await Purchase.findById(id)
+        if (!result) return res.status(404).json({success:false,error:"Purchase record not found"})
+
+        if (result.purchaseStatus == "received") {
+            return res.status(400).json({
+                success:false,
+                error: "Purchase status is ready received"
+            })
+        }
+        //purchase Status == "received"
+        
+       if (purchaseStatus == "received"){
+        for(const item of result.items){
+            const product = await Product.findById(item.product)
+            product.currentStock = (product.currentStock || 0) + item.quantity
+            await product.save()
+        }
+       }
+       const newDoc = await Purchase.findByIdAndUpdate(id,{purchaseStatus})
+       res.status(200).json({
+        success: true,
+        result: newDoc
+       })
+
+    }catch (error) {
+        next (error)
     }
 }

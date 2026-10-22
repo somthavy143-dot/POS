@@ -1,12 +1,13 @@
 import express from 'express'
 import { create, getAll, getOne, remove, update } from '../controllers/customer.controller.js'
+import { Roles } from '../middlewares/permission.midleware.js'
 
 const router = express.Router()
 
-router.post('/',create)
-router.get('/', getAll)
-router.get('/:id', getOne)
-router.put('/:id', update)
-router.delete('/:id', remove)
+router.post('/',Roles("manager"),create)
+router.get('/',Roles("manager"), getAll)
+router.get('/:id',Roles("manager"), getOne)
+router.put('/:id',Roles("manager"), update)
+router.delete('/:id', Roles("manager"),remove)
 
 export default router
